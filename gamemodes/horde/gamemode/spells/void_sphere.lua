@@ -33,12 +33,7 @@ SPELL.Fire           = function ( ply, _, charge_stage )
     end
 
     local ar = ply:EyeAngles()
-    if charge_stage == 1 then
-
-        SpawnProjectile( ply:EyePos() + ( ar:Forward() * 16 ), ar, ar:Forward() * 1400 )
-
-    elseif charge_stage == 2 then
-	
+    if charge_stage == 2 then
         SpawnProjectile( ply:EyePos() + ( ar:Forward() * 16 ), ar, ar:Forward() * 1400 )
         ar:RotateAroundAxis( ar:Up(), 15 )
 
@@ -47,17 +42,11 @@ SPELL.Fire           = function ( ply, _, charge_stage )
 
         ar:RotateAroundAxis( ar:Up(), -15 )
         SpawnProjectile( ply:EyePos() + ( ar:Forward() * 16 ), ar, ar:Forward() * 1400 )
-
-
     else
-
         SpawnProjectile( ply:EyePos() + ( ar:Forward() * 16 ), ar, ar:Forward() * 1400 )
         ar = ply:EyeAngles()
-
     end
-
     ply:EmitSound( "horde/weapons/void_projector/void_spear_launch.ogg", 100, math.random( 70, 90 ) )
-
 end
 
 SPELL.Price                         = 50

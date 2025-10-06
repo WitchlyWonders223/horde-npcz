@@ -31,14 +31,14 @@ SPELL.Fire            = function (ply, wpn, charge_stage)
     if ply:Horde_HasSpell("raise_greater_spectre") then
         param.greater_spectre = true
 		ply:Horde_SetMind( math.min( ply:Horde_GetMaxMind(), 22 + ply:Horde_GetMind() ) )
-		elseif ply:Horde_HasSpell("raise_greater_spectre") and ply:Horde_GetMind() >= 80 then
-		param.greater_spectre = true
+		-- elseif ply:Horde_HasSpell("raise_greater_spectre") and ply:Horde_GetMind() >= 80 then
+		-- param.greater_spectre = true
     end
 	if ply:Horde_HasSpell("raise_spectre") then
         param.spectre = true
 		ply:Horde_SetMind( math.min( ply:Horde_GetMaxMind(), 15 + ply:Horde_GetMind() ) )
-		elseif ply:Horde_HasSpell("raise_spectre") and ply:Horde_GetMind() >= 90 then
-		param.spectre = true
+		-- elseif ply:Horde_HasSpell("raise_spectre") and ply:Horde_GetMind() >= 90 then
+		-- param.spectre = true
     end
     HORDE:RaiseSpectre(ply, param, tr.Entity:GetPos())
     sound.Play("horde/weapons/void_projector/devour.ogg", tr.Entity:GetPos(), 150, 100)
