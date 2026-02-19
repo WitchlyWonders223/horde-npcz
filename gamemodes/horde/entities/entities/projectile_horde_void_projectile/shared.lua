@@ -86,7 +86,6 @@ function ENT:Think()
         self:EmitSound("weapons/physcannon/energy_bounce2.wav", 100, 50)
         if self.VoidCascade then
             self.PlaySoundTimer = CurTime() + 0.25
-            local dmg_mult = 1
 
             local e = EffectData()
             e:SetOrigin(self:GetPos())
@@ -98,14 +97,13 @@ function ENT:Think()
             dmg_splash:SetAttacker(self.Owner)
             dmg_splash:SetInflictor(self)
             dmg_splash:SetDamageType(DMG_REMOVENORAGDOLL)
-            dmg_splash:SetDamage(self:GetSpellBaseDamage(1) * dmg_mult)
+            dmg_splash:SetDamage(self:GetSpellBaseDamage(1))
             dmg_splash:SetDamageCustom(HORDE.DMG_PLAYER_FRIENDLY)
             util.BlastDamageInfo(dmg_splash, self:GetPos(), 150)
             -- Apply Frostbite in dmg_splash radius
 			for _, ent in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
 				if HORDE:IsEnemy(ent) then
-					ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, dmg_splash:GetDamage()/2, self.Owner)
-					dmg_splash:SetDamagePosition(ent:GetPos())
+					ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, dmg_splash:GetDamage()/4, self.Owner)
 				end
 			end
         else
@@ -151,7 +149,7 @@ function ENT:Detonate(hitpos, ent)
             if (not tr.Entity:IsValid()) or (not tr.Entity:IsNPC()) then
                 if ent:IsNPC() then
                     ent:TakeDamageInfo(dmg)
-                    ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, dmg:GetDamage()/2, self.Owner) 
+                    ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, self:GetSpellBaseDamage(2)/2 * dmg_mult, self.Owner) 
                 end
             else
             end
@@ -167,8 +165,7 @@ function ENT:Detonate(hitpos, ent)
             if self:GetCharged() >= 1 then
                 for _, ent in pairs(ents.FindInSphere(self:GetPos(), 150 * radius_mult)) do
                     if HORDE:IsEnemy(ent) then
-                    ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, dmg_splash:GetDamage()/2, self.Owner)
-                    dmg_splash:SetDamagePosition(ent:GetPos())
+                    ent:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, self:GetSpellBaseDamage(2)/2 * dmg_mult, self.Owner)
                     end
                 end
             end
@@ -182,17 +179,6 @@ end
 function ENT:PhysicsCollide(colData, collider)
     if !self:IsValid() or self.Removing then return end
     local pos = colData.HitPos
-    --[[if self.properties.field == true then
-        if colData.HitEntity:IsNPC() then
-            local buildup_mult = 1
-            if self:GetCharged() == 1 then
-                buildup_mult = 1.5
-            elseif self:GetCharged() == 2 then
-                buildup_mult = 2
-            end
-            colData.HitEntity:Horde_AddDebuffBuildup(HORDE.Status_Frostbite, 20 * buildup_mult, self.Owner)
-        end
-    end]]--
     ParticleEffect("ice_impact_heavy", pos, Angle(0,0,0), self.Owner)
     sound.Play("horde/weapons/void_projector/void_spear_hit.ogg", pos, 100, math.random(70, 90))
 
@@ -211,7 +197,6 @@ function ENT:PhysicsCollide(colData, collider)
         util.Effect("cold_explosion", e, true, true)
         sound.Play("horde/weapons/void_projector/void_spear_blast.ogg", pos, 100, math.random(70, 90))
     end
-    --ParticleEffect("ice_impact_swave", pos, Angle(0,0,0), self.Owner)
     self:Detonate(pos, colData.HitEntity)
 end
 
